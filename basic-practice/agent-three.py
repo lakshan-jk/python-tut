@@ -7,6 +7,7 @@ class SmartAgent:
         self.name = name
         self.memory = []
         self.last_intent = None
+        self.user_name = None
 
     def extract_name(self, text):
         match = re.search(r"my name is (\w+)", text, re.IGNORECASE)
@@ -61,7 +62,7 @@ class SmartAgent:
         elif intent == "store_name":
             name = self.extract_name(user_input)
             if name: 
-                self.name.append(f"user_name:{name}")
+                self.user_name = name  # <-- Fix here
                 return f"Nice to meet you, {name}!"
             return "I'm sorry,Yaara nee?."
         elif intent == "mood":
