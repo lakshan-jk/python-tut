@@ -1,0 +1,72 @@
+import pdfplumber  # More reliable alternative
+from openai import OpenAI
+import os
+
+# Initialize OpenAI client with your API key
+client = OpenAI(api_key="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")
+
+print(os.path.exists("/Users/lakshan/Documents/python-tut/basic-practice/Lakshan-Resume.pdf"))
+
+class GenerativeResumeAgent:
+    def __init__(self, pdf_path):
+        self.text = self._extract_text(pdf_path)
+
+    def _extract_text(self, pdf_path):
+        try:
+            # Check if file exists first
+            if not os.path.exists(pdf_path):
+                raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+            
+            full_text = ""
+            with pdfplumber.open(pdf_path) as pdf:
+                for page in pdf.pages:
+                    text = page.extract_text()
+                    if text:  # Only add if text was extracted
+                        full_text += text + "\n"
+            
+            return full_text.strip()
+        except Exception as e:
+            print(f"❌ Error opening PDF: {e}")
+            raise
+
+    def ask(self, question):
+        prompt = f"""
+You are a helpful assistant analyzing a candidate's resume.
+Here is the resume content:
+
+\"\"\"
+{self.text}
+\"\"\"
+
+Answer the following question based only on the resume:
+
+Q: {question}
+A:"""
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-mini",  # or "gpt-3.5-turbo"
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3
+            )
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            return f"❌ Error getting response from OpenAI: {e}"
+
+    def chat(self):
+        print("📄 Generative Resume AI Agent is ready. Type 'exit' to quit.")
+        while True:
+            q = input("You: ")
+            if q.lower() in ["exit", "quit"]:
+                print("Agent: Bye!")
+                break
+            response = self.ask(q)
+            print("Agent:", response)
+
+# Usage
+if __name__ == "__main__":
+    try:
+        agent = GenerativeResumeAgent("/Users/lakshan/Documents/python-tut/basic-practice/Lakshan-Resume.pdf")
+        agent.chat()
+    except Exception as e:
+        print(f"❌ Failed to initialize agent: {e}")
