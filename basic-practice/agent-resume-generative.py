@@ -1,9 +1,8 @@
 import pdfplumber  # More reliable alternative
-from openai import OpenAI
+
 import os
 
 # Initialize OpenAI client with your API key
-client = OpenAI(api_key="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")
 
 print(os.path.exists("/Users/lakshan/Documents/python-tut/basic-practice/Lakshan-Resume.pdf"))
 
