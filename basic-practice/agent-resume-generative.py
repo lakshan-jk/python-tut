@@ -1,8 +1,5 @@
-import pdfplumber  # More reliable alternative
-
+import pdfplumber 
 import os
-
-# Initialize OpenAI client with your API key
 
 print(os.path.exists("/Users/lakshan/Documents/python-tut/basic-practice/Lakshan-Resume.pdf"))
 
@@ -12,7 +9,6 @@ class GenerativeResumeAgent:
 
     def _extract_text(self, pdf_path):
         try:
-            # Check if file exists first
             if not os.path.exists(pdf_path):
                 raise FileNotFoundError(f"PDF file not found: {pdf_path}")
             
@@ -20,9 +16,8 @@ class GenerativeResumeAgent:
             with pdfplumber.open(pdf_path) as pdf:
                 for page in pdf.pages:
                     text = page.extract_text()
-                    if text:  # Only add if text was extracted
+                    if text:
                         full_text += text + "\n"
-            
             return full_text.strip()
         except Exception as e:
             print(f"❌ Error opening PDF: {e}")
@@ -44,7 +39,7 @@ A:"""
 
         try:
             response = client.chat.completions.create(
-                model="gpt-3.5-mini",  # or "gpt-3.5-turbo"
+                model="gpt-3.5-mini",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3
             )
@@ -62,7 +57,6 @@ A:"""
             response = self.ask(q)
             print("Agent:", response)
 
-# Usage
 if __name__ == "__main__":
     try:
         agent = GenerativeResumeAgent("/Users/lakshan/Documents/python-tut/basic-practice/Lakshan-Resume.pdf")
