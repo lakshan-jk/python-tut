@@ -1,7 +1,6 @@
 import random
 import re
 
-
 class SmartAgent:
     def __init__(self, name="Leo"):
         self.name = name
